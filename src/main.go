@@ -1,8 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/lib/pq"
 	"log"
 	"net/http"
 )
@@ -21,7 +23,22 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+var db *sql.DB
+
 func main() {
+	pgUrl, err := pq.ParseURL("postgres://qyiuphex:PpgU6eSADADi89kMLqLMg9Xu4SZmnwgj@lucky.db.elephantsql.com/qyiuphex")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	db, err = sql.Open("postgres", pgUrl)
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
 	router := mux.NewRouter()
 	router.HandleFunc("/signup", signup).Methods("POST")
 	router.HandleFunc("/login", login).Methods("POST")
