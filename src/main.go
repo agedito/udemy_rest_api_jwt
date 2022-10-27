@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	"github.com/lib/pq"
 	"log"
@@ -49,7 +51,22 @@ func main() {
 }
 
 func signup(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("SignUp invoked")
+	var user User
+	var err Error
+	_ = json.NewDecoder(r.Body).Decode(&user)
+	spew.Dump("User", user)
+
+	if user.Email == "" {
+		err.Message = "email is missing"
+		respondWithError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if user.Password == "" {
+		err.Message = "password is missing"
+		respondWithError(w, http.StatusBadRequest, err)
+		return
+	}
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -66,4 +83,9 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 		next.ServeHTTP(w, r)
 	}
 	return callback
+}
+
+func respondWithError(w http.ResponseWriter, status int, error Error) {
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(error)
 }
