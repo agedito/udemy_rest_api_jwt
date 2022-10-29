@@ -160,7 +160,7 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 		if len(bearerToken) == 2 {
 			authToken := bearerToken[1]
 
-			token, error := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("There was an error")
 				}
@@ -168,8 +168,8 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 				return []byte("secret"), nil
 			})
 
-			if error != nil {
-				errorObject.Message = error.Error()
+			if err != nil {
+				errorObject.Message = err.Error()
 				respondWithError(w, http.StatusUnauthorized, errorObject)
 				return
 			}
@@ -177,7 +177,7 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 			if token.Valid {
 				next.ServeHTTP(w, r)
 			} else {
-				errorObject.Message = error.Error()
+				errorObject.Message = err.Error()
 				respondWithError(w, http.StatusUnauthorized, errorObject)
 				return
 			}
