@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 )
@@ -52,25 +54,51 @@ func main() {
 
 func signup(w http.ResponseWriter, r *http.Request) {
 	var user User
-	var err Error
+	var finalError Error
 	_ = json.NewDecoder(r.Body).Decode(&user)
 	spew.Dump("User", user)
 
 	if user.Email == "" {
-		err.Message = "email is missing"
-		respondWithError(w, http.StatusBadRequest, err)
+		finalError.Message = "email is missing"
+		respondWithError(w, http.StatusBadRequest, finalError)
 		return
 	}
 
 	if user.Password == "" {
-		err.Message = "password is missing"
-		respondWithError(w, http.StatusBadRequest, err)
+		finalError.Message = "password is missing"
+		respondWithError(w, http.StatusBadRequest, finalError)
 		return
 	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	if err != nil {
+		log.Fatal(err)
+	}
+	user.Password = string(hash)
+
+	stmt := "insert into users (email, password) values($1, $2) RETURNING id;"
+	err = db.QueryRow(stmt, user.Email, user.Password).Scan(&user.ID)
+
+	if err != nil {
+		finalError.Message = "Server error."
+		respondWithError(w, http.StatusInternalServerError, finalError)
+		return
+	}
+
+	user.Password = ""
+	w.Header().Set("Content-Type", "application/json")
+	responseJSON(w, user)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Login invoked")
+	var user User
+	json.NewDecoder(r.Body).Decode(&user)
+	token, err := GenerateToken(user)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(token)
 }
 
 func ProtectedEndPoint(w http.ResponseWriter, r *http.Request) {
@@ -88,4 +116,26 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 func respondWithError(w http.ResponseWriter, status int, error Error) {
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(error)
+}
+
+func responseJSON(w http.ResponseWriter, data interface{}) {
+	_ = json.NewEncoder(w).Encode(data)
+}
+
+func GenerateToken(user User) (string, error) {
+	var err error
+	secret := "secret"
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": user.Email,
+		"iss":   "course",
+	})
+
+	tokenString, err := token.SignedString([]byte(secret))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return tokenString, nil
 }
