@@ -7,7 +7,6 @@ import (
 	"agedito/udemy/rest_api_jwt/utils"
 	"database/sql"
 	"encoding/json"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -27,50 +26,12 @@ func main() {
 
 	controller := controllers.Controller{}
 
-	router.HandleFunc("/signup", signup).Methods("POST")
+	router.HandleFunc("/signup", controller.SignUp(db)).Methods("POST")
 	router.HandleFunc("/login", login).Methods("POST")
 	router.HandleFunc("/protected", utils.TokenVerifyMiddleWare(controller.ProtectedEndPoint)).Methods("POST")
 
 	log.Println("Listen on port 8000...")
 	log.Fatal(http.ListenAndServe(":8000", router))
-}
-
-func signup(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	var finalError models.Error
-	_ = json.NewDecoder(r.Body).Decode(&user)
-	spew.Dump("User", user)
-
-	if user.Email == "" {
-		finalError.Message = "email is missing"
-		utils.RespondWithError(w, http.StatusBadRequest, finalError)
-		return
-	}
-
-	if user.Password == "" {
-		finalError.Message = "password is missing"
-		utils.RespondWithError(w, http.StatusBadRequest, finalError)
-		return
-	}
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	if err != nil {
-		log.Fatal(err)
-	}
-	user.Password = string(hash)
-
-	stmt := "insert into users (email, password) values($1, $2) RETURNING id;"
-	err = db.QueryRow(stmt, user.Email, user.Password).Scan(&user.ID)
-
-	if err != nil {
-		finalError.Message = "Server error."
-		utils.RespondWithError(w, http.StatusInternalServerError, finalError)
-		return
-	}
-
-	user.Password = ""
-	w.Header().Set("Content-Type", "application/json")
-	utils.ResponseJSON(w, user)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
