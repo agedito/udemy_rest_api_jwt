@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"agedito/udemy/rest_api_jwt/models"
+	userRepository "agedito/udemy/rest_api_jwt/repository/user"
 	"agedito/udemy/rest_api_jwt/utils"
 	"database/sql"
 	"encoding/json"
@@ -75,22 +76,14 @@ func (c Controller) Login(db *sql.DB) http.HandlerFunc {
 
 		password := user.Password
 
-		row := db.QueryRow("select * from users where email=$1", user.Email)
-		sqlErr := row.Scan(&user.ID, &user.Email, &user.Password)
-
-		if sqlErr != nil {
-			if sqlErr == sql.ErrNoRows {
-				err.Message = "The user does not exist"
-				utils.RespondWithError(w, http.StatusBadRequest, err)
-				return
-			} else {
-				log.Fatal(sqlErr)
-			}
+		userRepo := userRepository.UserRepository{}
+		user, loginErr := userRepo.Login(db, user)
+		if loginErr != nil {
+			log.Fatal(loginErr)
 		}
-
 		hashedPassword := user.Password
 
-		sqlErr = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+		sqlErr := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 
 		if sqlErr != nil {
 			err.Message = "Invalid Password"
