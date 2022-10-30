@@ -1,6 +1,7 @@
 package main
 
 import (
+	"agedito/udemy/rest_api_jwt/models"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -15,20 +16,6 @@ import (
 	"os"
 	"strings"
 )
-
-type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type JWT struct {
-	Token string `json:"token"`
-}
-
-type Error struct {
-	Message string `json:"message"`
-}
 
 var db *sql.DB
 
@@ -60,8 +47,8 @@ func main() {
 }
 
 func signup(w http.ResponseWriter, r *http.Request) {
-	var user User
-	var finalError Error
+	var user models.User
+	var finalError models.Error
 	_ = json.NewDecoder(r.Body).Decode(&user)
 	spew.Dump("User", user)
 
@@ -98,9 +85,9 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	var user User
-	var resultJwt JWT
-	var err Error
+	var user models.User
+	var resultJwt models.JWT
+	var err models.Error
 
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
@@ -159,7 +146,7 @@ func ProtectedEndPoint(_ http.ResponseWriter, _ *http.Request) {
 
 func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var errorObject Error
+		var errorObject models.Error
 		authHeader := r.Header.Get("Authorization")
 		bearerToken := strings.Split(authHeader, " ")
 
@@ -195,7 +182,7 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func respondWithError(w http.ResponseWriter, status int, error Error) {
+func respondWithError(w http.ResponseWriter, status int, error models.Error) {
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(error)
 }
@@ -204,7 +191,7 @@ func responseJSON(w http.ResponseWriter, data interface{}) {
 	_ = json.NewEncoder(w).Encode(data)
 }
 
-func GenerateToken(user User) (string, error) {
+func GenerateToken(user models.User) (string, error) {
 	var err error
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
