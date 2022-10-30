@@ -1,6 +1,7 @@
 package main
 
 import (
+	"agedito/udemy/rest_api_jwt/driver"
 	"agedito/udemy/rest_api_jwt/models"
 	"database/sql"
 	"encoding/json"
@@ -8,7 +9,6 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	"github.com/lib/pq"
 	"github.com/subosito/gotenv"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -24,18 +24,7 @@ func init() {
 }
 
 func main() {
-	pgUrl, err := pq.ParseURL(os.Getenv("ELEPHANTSQL_URL"))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	db, err = sql.Open("postgres", pgUrl)
-	err = db.Ping()
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	db = driver.ConnectDB()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/signup", signup).Methods("POST")
