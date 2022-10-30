@@ -39,8 +39,8 @@ func (c Controller) SignUp(db *sql.DB) http.HandlerFunc {
 		}
 		user.Password = string(hash)
 
-		stmt := "insert into users (email, password) values($1, $2) RETURNING id;"
-		err = db.QueryRow(stmt, user.Email, user.Password).Scan(&user.ID)
+		userRepo := userRepository.UserRepository{}
+		user = userRepo.Signup(db, user)
 
 		if err != nil {
 			finalError.Message = "Server error."
