@@ -1,12 +1,12 @@
 package main
 
 import (
+	"agedito/udemy/rest_api_jwt/controllers"
 	"agedito/udemy/rest_api_jwt/driver"
 	"agedito/udemy/rest_api_jwt/models"
 	"agedito/udemy/rest_api_jwt/utils"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
@@ -23,11 +23,13 @@ func init() {
 
 func main() {
 	db = driver.ConnectDB()
-
 	router := mux.NewRouter()
+
+	controller := controllers.Controller{}
+
 	router.HandleFunc("/signup", signup).Methods("POST")
 	router.HandleFunc("/login", login).Methods("POST")
-	router.HandleFunc("/protected", utils.TokenVerifyMiddleWare(ProtectedEndPoint)).Methods("POST")
+	router.HandleFunc("/protected", utils.TokenVerifyMiddleWare(controller.ProtectedEndPoint)).Methods("POST")
 
 	log.Println("Listen on port 8000...")
 	log.Fatal(http.ListenAndServe(":8000", router))
@@ -125,8 +127,4 @@ func login(w http.ResponseWriter, r *http.Request) {
 	resultJwt.Token = token
 
 	utils.ResponseJSON(w, resultJwt)
-}
-
-func ProtectedEndPoint(_ http.ResponseWriter, _ *http.Request) {
-	fmt.Println("Protected endpoint invoked")
 }
