@@ -3,6 +3,7 @@ package main
 import (
 	"agedito/udemy/rest_api_jwt/driver"
 	"agedito/udemy/rest_api_jwt/models"
+	"agedito/udemy/rest_api_jwt/utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -43,13 +44,13 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 	if user.Email == "" {
 		finalError.Message = "email is missing"
-		respondWithError(w, http.StatusBadRequest, finalError)
+		utils.RespondWithError(w, http.StatusBadRequest, finalError)
 		return
 	}
 
 	if user.Password == "" {
 		finalError.Message = "password is missing"
-		respondWithError(w, http.StatusBadRequest, finalError)
+		utils.RespondWithError(w, http.StatusBadRequest, finalError)
 		return
 	}
 
@@ -64,13 +65,13 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		finalError.Message = "Server error."
-		respondWithError(w, http.StatusInternalServerError, finalError)
+		utils.RespondWithError(w, http.StatusInternalServerError, finalError)
 		return
 	}
 
 	user.Password = ""
 	w.Header().Set("Content-Type", "application/json")
-	responseJSON(w, user)
+	utils.ResponseJSON(w, user)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -82,13 +83,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	if user.Email == "" {
 		err.Message = "Email is missing."
-		respondWithError(w, http.StatusBadRequest, err)
+		utils.RespondWithError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	if user.Password == "" {
 		err.Message = "Password is missing."
-		respondWithError(w, http.StatusBadRequest, err)
+		utils.RespondWithError(w, http.StatusBadRequest, err)
 		return
 	}
 
@@ -100,7 +101,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	if sqlErr != nil {
 		if sqlErr == sql.ErrNoRows {
 			err.Message = "The user does not exist"
-			respondWithError(w, http.StatusBadRequest, err)
+			utils.RespondWithError(w, http.StatusBadRequest, err)
 			return
 		} else {
 			log.Fatal(sqlErr)
@@ -113,7 +114,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	if sqlErr != nil {
 		err.Message = "Invalid Password"
-		respondWithError(w, http.StatusUnauthorized, err)
+		utils.RespondWithError(w, http.StatusUnauthorized, err)
 		return
 	}
 
@@ -126,7 +127,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	resultJwt.Token = token
 
-	responseJSON(w, resultJwt)
+	utils.ResponseJSON(w, resultJwt)
 }
 
 func ProtectedEndPoint(_ http.ResponseWriter, _ *http.Request) {
@@ -152,7 +153,7 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 
 			if err != nil {
 				errorObject.Message = err.Error()
-				respondWithError(w, http.StatusUnauthorized, errorObject)
+				utils.RespondWithError(w, http.StatusUnauthorized, errorObject)
 				return
 			}
 
@@ -160,24 +161,15 @@ func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 				next.ServeHTTP(w, r)
 			} else {
 				errorObject.Message = err.Error()
-				respondWithError(w, http.StatusUnauthorized, errorObject)
+				utils.RespondWithError(w, http.StatusUnauthorized, errorObject)
 				return
 			}
 		} else {
 			errorObject.Message = "Invalid token."
-			respondWithError(w, http.StatusUnauthorized, errorObject)
+			utils.RespondWithError(w, http.StatusUnauthorized, errorObject)
 			return
 		}
 	}
-}
-
-func respondWithError(w http.ResponseWriter, status int, error models.Error) {
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(error)
-}
-
-func responseJSON(w http.ResponseWriter, data interface{}) {
-	_ = json.NewEncoder(w).Encode(data)
 }
 
 func GenerateToken(user models.User) (string, error) {
