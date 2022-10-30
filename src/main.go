@@ -8,14 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/subosito/gotenv"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
-	"os"
-	"strings"
 )
 
 var db *sql.DB
@@ -30,7 +27,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/signup", signup).Methods("POST")
 	router.HandleFunc("/login", login).Methods("POST")
-	router.HandleFunc("/protected", TokenVerifyMiddleWare(ProtectedEndPoint)).Methods("POST")
+	router.HandleFunc("/protected", utils.TokenVerifyMiddleWare(ProtectedEndPoint)).Methods("POST")
 
 	log.Println("Listen on port 8000...")
 	log.Fatal(http.ListenAndServe(":8000", router))
@@ -118,7 +115,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, sqlErr := GenerateToken(user)
+	token, sqlErr := utils.GenerateToken(user)
 
 	if sqlErr != nil {
 		log.Fatal(sqlErr)
@@ -132,59 +129,4 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 func ProtectedEndPoint(_ http.ResponseWriter, _ *http.Request) {
 	fmt.Println("Protected endpoint invoked")
-}
-
-func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var errorObject models.Error
-		authHeader := r.Header.Get("Authorization")
-		bearerToken := strings.Split(authHeader, " ")
-
-		if len(bearerToken) == 2 {
-			authToken := bearerToken[1]
-
-			token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("there was an error")
-				}
-
-				return []byte(os.Getenv("secret")), nil
-			})
-
-			if err != nil {
-				errorObject.Message = err.Error()
-				utils.RespondWithError(w, http.StatusUnauthorized, errorObject)
-				return
-			}
-
-			if token.Valid {
-				next.ServeHTTP(w, r)
-			} else {
-				errorObject.Message = err.Error()
-				utils.RespondWithError(w, http.StatusUnauthorized, errorObject)
-				return
-			}
-		} else {
-			errorObject.Message = "Invalid token."
-			utils.RespondWithError(w, http.StatusUnauthorized, errorObject)
-			return
-		}
-	}
-}
-
-func GenerateToken(user models.User) (string, error) {
-	var err error
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": user.Email,
-		"iss":   "course",
-	})
-
-	tokenString, err := token.SignedString([]byte(os.Getenv("secret")))
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return tokenString, nil
 }
