@@ -7,12 +7,14 @@ import (
 )
 
 type Server struct {
-	router *mux.Router
+	address string
+	router  *mux.Router
 }
 
-func New() Server {
+func New(address string) Server {
 	server := Server{}
 
+	server.address = address
 	server.router = mux.NewRouter()
 	server.createEndpoints()
 
@@ -20,7 +22,7 @@ func New() Server {
 }
 
 func (server *Server) Run() error {
-	return http.ListenAndServe(":8000", server.router)
+	return http.ListenAndServe(server.address, server.router)
 }
 
 func (server *Server) createEndpoints() {

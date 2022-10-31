@@ -5,6 +5,6 @@ import (
 )
 
 func Run() error {
-	s := server.New()
+	s := server.New(":8000")
 	return s.Run()
 }
