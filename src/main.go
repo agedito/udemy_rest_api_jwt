@@ -1,6 +1,9 @@
 package main
 
-import "agedito/udemy/rest_api_jwt/bootstrap"
+import (
+	"agedito/udemy/rest_api_jwt/bootstrap"
+	"log"
+)
 
 //FEATURE Manage environments
 //FEATURE Create postman and .http files
@@ -9,6 +12,7 @@ import "agedito/udemy/rest_api_jwt/bootstrap"
 func main() {
 	err := bootstrap.Run()
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 }
