@@ -1,8 +1,10 @@
 package bootstrap
 
-import "fmt"
+import (
+	"agedito/udemy/rest_api_jwt/server"
+)
 
 func Run() error {
-	fmt.Println("Running")
-	return nil
+	s := server.New()
+	return s.Run()
 }
