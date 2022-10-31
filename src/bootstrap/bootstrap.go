@@ -11,6 +11,6 @@ func Run() error {
 	c := app_controller.AppController{}
 
 	fmt.Println("Listen at :8000...")
-	// TODO: Study pointer parameters, when is needed?
+	//LEARN pointer parameters, when is needed?
 	return s.Run(&c)
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// FEATURE Implement this
 func (_ *AppController) Login(_ http.ResponseWriter, _ *http.Request) {
 	fmt.Println("Login")
 }

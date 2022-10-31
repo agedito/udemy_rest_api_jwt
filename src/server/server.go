@@ -26,7 +26,8 @@ func (server *Server) Run(controller controller.Controller) error {
 }
 
 func (server *Server) createEndpoints(controller controller.Controller) {
-	// TODO: Management 404 error, try to access to a no valid endpoint
+	//FEATURE Management 404 error, try to access to a no valid endpoint
+	//FEATURE Middleware
 	server.router.HandleFunc("/ping", controller.Ping)
 	server.router.HandleFunc("/signup", controller.SignUp)
 	server.router.HandleFunc("/login", controller.Login)
