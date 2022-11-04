@@ -11,7 +11,7 @@ import (
 
 const (
 	address = ":8000"
-	url     = "postgresql://qyiuphex:qyiuphex@lucky.db.elephantsql.com:5432/qyiuphex"
+	url     = "postgres://qyiuphex:PpgU6eSADADi89kMLqLMg9Xu4SZmnwgj@lucky.db.elephantsql.com/qyiuphex"
 )
 
 var RepoError = errors.New("error creating repository")

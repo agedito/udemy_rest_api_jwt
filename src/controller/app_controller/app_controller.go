@@ -20,5 +20,5 @@ func (c *AppController) ResponseJson(w http.ResponseWriter, data interface{}) {
 }
 
 func New(repo repository.Repository) AppController {
-	return AppController{Repo: repository.Repository{}}
+	return AppController{Repo: repo}
 }
