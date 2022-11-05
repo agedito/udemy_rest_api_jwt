@@ -8,11 +8,18 @@ import (
 )
 
 var GenerationTokenError = errors.New("error generating token")
+var InvalidTokenError = errors.New("invalid token")
 
 const secret string = "secret"
 
 type Token struct {
 	Token string
+}
+
+type UserClaims struct {
+	jwt.StandardClaims
+	Email string `json:"email"`
+	Iss   string `json:"iss"`
 }
 
 func NewFromId(tokenId string) (Token, error) {
@@ -24,11 +31,7 @@ func NewFromId(tokenId string) (Token, error) {
 }
 
 func NewFromUser(user models.User) (Token, error) {
-	// TODO: environment management
-	claims := jwt.MapClaims{
-		"email": user.Email,
-		"iss":   "course",
-	}
+	claims := UserClaims{Email: user.Email, Iss: "course"}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenId, err := token.SignedString([]byte(secret))
 
@@ -56,4 +59,16 @@ func parseTokenMethod(token *jwt.Token) (interface{}, error) {
 		return nil, GenerationTokenError
 	}
 	return []byte(secret), nil
+}
+
+func (t *Token) GetEmail() (string, error) {
+	claims := UserClaims{}
+	_, err := jwt.ParseWithClaims(t.Token, &claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+
+	if utils.AssertError(err) {
+		return "", InvalidTokenError
+	}
+	return claims.Email, nil
 }

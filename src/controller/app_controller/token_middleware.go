@@ -4,7 +4,6 @@ import (
 	"agedito/udemy/rest_api_jwt/service/token"
 	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -18,7 +17,12 @@ func (c *AppController) TokenMiddleware(callback http.HandlerFunc) http.HandlerF
 			c.responseError(w, http.StatusUnauthorized, NoValidTokenError)
 			return
 		}
-		fmt.Println("TOKEN", requestToken)
+
+		_, err := requestToken.GetEmail()
+		if utils.AssertError(err) {
+			return
+		}
+
 		callback.ServeHTTP(w, r)
 	}
 }

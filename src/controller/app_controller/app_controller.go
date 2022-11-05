@@ -47,3 +47,16 @@ func (c *AppController) getUserFromRequest(w http.ResponseWriter, r *http.Reques
 func New(repo repository.Repository) AppController {
 	return AppController{Repo: repo}
 }
+
+func (c *AppController) getEmailFromTokenRequest(_ http.ResponseWriter, r *http.Request) (string, error) {
+	token, err := c.getTokenFromRequest(r)
+	if utils.AssertError(err) {
+		return "", DecodeUserError
+	}
+
+	email, emailErr := token.GetEmail()
+	if utils.AssertError(emailErr) {
+		return "", DecodeUserError
+	}
+	return email, nil
+}
