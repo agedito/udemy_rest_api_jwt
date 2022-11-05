@@ -31,5 +31,5 @@ func (server *Server) createEndpoints(controller controller.Controller) {
 	server.router.HandleFunc("/ping", controller.Ping)
 	server.router.HandleFunc("/signup", controller.SignUp)
 	server.router.HandleFunc("/login", controller.Login)
-	server.router.HandleFunc("/profile", controller.GetOwnProfile)
+	server.router.HandleFunc("/profile", controller.TokenMiddleware(controller.GetOwnProfile))
 }
