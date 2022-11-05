@@ -6,6 +6,6 @@ import (
 )
 
 // FEATURE Implement this
-func (_ *AppController) Protected(_ http.ResponseWriter, _ *http.Request) {
+func (_ *AppController) GetOwnProfile(_ http.ResponseWriter, _ *http.Request) {
 	fmt.Println("Protected")
 }
