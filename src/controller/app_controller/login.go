@@ -30,7 +30,7 @@ func (c *AppController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginToken, tokenErr := token.New(requestUser)
+	loginToken, tokenErr := token.NewFromUser(requestUser)
 	if utils.AssertError(tokenErr) {
 		c.responseError(w, http.StatusInternalServerError, tokenErr)
 		return
