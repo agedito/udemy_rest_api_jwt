@@ -24,7 +24,7 @@ type UserClaims struct {
 
 func NewFromId(tokenId string) (Token, error) {
 	_, err := getJwtToken(tokenId)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		return Token{}, GenerationTokenError
 	}
 	return Token{tokenId}, nil
@@ -44,7 +44,7 @@ func NewFromUser(user models.User) (Token, error) {
 
 func getJwtToken(tokenId string) (*jwt.Token, error) {
 	jwtToken, err := jwt.Parse(tokenId, parseTokenMethod)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		return &jwt.Token{}, GenerationTokenError
 	}
 	if !jwtToken.Valid {
@@ -67,7 +67,7 @@ func (t *Token) GetEmail() (string, error) {
 		return []byte(secret), nil
 	})
 
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		return "", InvalidTokenError
 	}
 	return claims.Email, nil

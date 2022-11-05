@@ -11,7 +11,7 @@ var NotFindUserError = errors.New("no find user")
 
 func (c *AppController) GetOwnProfile(w http.ResponseWriter, r *http.Request) {
 	email, err := c.getEmailFromTokenRequest(w, r)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		c.responseError(w, http.StatusUnauthorized, InvalidEmailError)
 	}
 

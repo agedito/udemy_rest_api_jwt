@@ -1,5 +1,5 @@
 package utils
 
-func AssertError(err error) bool {
+func IsError(err error) bool {
 	return err != nil
 }

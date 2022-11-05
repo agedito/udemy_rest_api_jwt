@@ -13,13 +13,13 @@ var NoValidTokenError = errors.New("no valid token")
 func (c *AppController) TokenMiddleware(callback http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestToken, tokenErr := c.getTokenFromRequest(r)
-		if utils.AssertError(tokenErr) {
+		if utils.IsError(tokenErr) {
 			c.responseError(w, http.StatusUnauthorized, NoValidTokenError)
 			return
 		}
 
 		_, err := requestToken.GetEmail()
-		if utils.AssertError(err) {
+		if utils.IsError(err) {
 			return
 		}
 
@@ -36,7 +36,7 @@ func (c *AppController) getTokenFromRequest(r *http.Request) (token.Token, error
 	bearerToken := strings.Split(authHeader, "Bearer ")[1]
 	finalToken, tokenErr := token.NewFromId(bearerToken)
 
-	if utils.AssertError(tokenErr) {
+	if utils.IsError(tokenErr) {
 		return token.Token{}, NoValidTokenError
 	}
 	return finalToken, nil

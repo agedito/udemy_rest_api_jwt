@@ -29,7 +29,7 @@ func (c *AppController) responseJson(w http.ResponseWriter, status int, data int
 func (c *AppController) getUserFromRequest(w http.ResponseWriter, r *http.Request) (models.User, error) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		c.responseError(w, http.StatusBadRequest, err)
 		return models.User{}, DecodeUserError
 	}
@@ -50,12 +50,12 @@ func New(repo repository.Repository) AppController {
 
 func (c *AppController) getEmailFromTokenRequest(_ http.ResponseWriter, r *http.Request) (string, error) {
 	token, err := c.getTokenFromRequest(r)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		return "", DecodeUserError
 	}
 
 	email, emailErr := token.GetEmail()
-	if utils.AssertError(emailErr) {
+	if utils.IsError(emailErr) {
 		return "", DecodeUserError
 	}
 	return email, nil

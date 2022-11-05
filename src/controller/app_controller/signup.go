@@ -12,7 +12,7 @@ var UserAlreadyExitsError = errors.New("user already exists")
 
 func (c *AppController) SignUp(w http.ResponseWriter, r *http.Request) {
 	user, err := c.getUserFromRequest(w, r)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		return
 	}
 

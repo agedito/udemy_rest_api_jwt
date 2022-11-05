@@ -13,7 +13,7 @@ var InvalidLoginError = errors.New("invalid email or password")
 // FEATURE Implement password service
 func (c *AppController) Login(w http.ResponseWriter, r *http.Request) {
 	requestUser, err := c.getUserFromRequest(w, r)
-	if utils.AssertError(err) {
+	if utils.IsError(err) {
 		return
 	}
 
@@ -31,7 +31,7 @@ func (c *AppController) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	loginToken, tokenErr := token.NewFromUser(requestUser)
-	if utils.AssertError(tokenErr) {
+	if utils.IsError(tokenErr) {
 		c.responseError(w, http.StatusInternalServerError, tokenErr)
 		return
 	}
