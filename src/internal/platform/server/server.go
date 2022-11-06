@@ -1,7 +1,7 @@
 package server
 
 import (
-	"agedito/udemy/rest_api_jwt/controller"
+	"agedito/udemy/rest_api_jwt/internal/platform/controller"
 	"github.com/gorilla/mux"
 	"net/http"
 )
