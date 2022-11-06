@@ -4,7 +4,7 @@ import (
 	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"agedito/udemy/rest_api_jwt/internal/platform/app_controller"
 	"agedito/udemy/rest_api_jwt/internal/platform/repository"
-	"agedito/udemy/rest_api_jwt/server"
+	"agedito/udemy/rest_api_jwt/internal/platform/server"
 	"errors"
 	"fmt"
 	"log"
