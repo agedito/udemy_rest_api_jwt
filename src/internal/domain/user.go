@@ -1,7 +1,6 @@
-package models
+package domain
 
 import (
-	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 	"net/mail"
 	"strings"
@@ -27,7 +26,7 @@ func (user *User) Validate() (bool, error) {
 	}
 
 	_, err := mail.ParseAddress(user.Email)
-	if utils.IsError(err) {
+	if err != nil {
 		return false, InvalidEmailError
 	}
 

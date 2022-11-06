@@ -1,7 +1,7 @@
 package token
 
 import (
-	"agedito/udemy/rest_api_jwt/models"
+	"agedito/udemy/rest_api_jwt/internal/domain"
 	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
@@ -30,7 +30,7 @@ func NewFromId(tokenId string) (Token, error) {
 	return Token{tokenId}, nil
 }
 
-func NewFromUser(user models.User) (Token, error) {
+func NewFromUser(user domain.User) (Token, error) {
 	claims := UserClaims{Email: user.Email, Iss: "course"}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenId, err := token.SignedString([]byte(secret))

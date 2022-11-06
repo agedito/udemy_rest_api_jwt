@@ -1,7 +1,7 @@
 package app_controller
 
 import (
-	"agedito/udemy/rest_api_jwt/models"
+	"agedito/udemy/rest_api_jwt/internal/domain"
 	"agedito/udemy/rest_api_jwt/repository"
 	"agedito/udemy/rest_api_jwt/use_cases"
 	"agedito/udemy/rest_api_jwt/utils"
@@ -28,19 +28,19 @@ func (c *AppController) responseJson(w http.ResponseWriter, status int, data int
 	_ = json.NewEncoder(w).Encode(data)
 }
 
-func (c *AppController) getUserFromRequest(w http.ResponseWriter, r *http.Request) (models.User, error) {
-	var user models.User
+func (c *AppController) getUserFromRequest(w http.ResponseWriter, r *http.Request) (domain.User, error) {
+	var user domain.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if utils.IsError(err) {
 		c.responseError(w, http.StatusBadRequest, err)
-		return models.User{}, DecodeUserError
+		return domain.User{}, DecodeUserError
 	}
 
 	var ok bool
 	ok, err = user.Validate()
 	if !ok {
 		c.responseError(w, http.StatusBadRequest, err)
-		return models.User{}, err
+		return domain.User{}, err
 	}
 
 	return user, nil

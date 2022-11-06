@@ -1,7 +1,7 @@
 package use_cases
 
 import (
-	"agedito/udemy/rest_api_jwt/models"
+	"agedito/udemy/rest_api_jwt/internal/domain"
 	"agedito/udemy/rest_api_jwt/service/password"
 	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
@@ -9,7 +9,7 @@ import (
 
 var UserAlreadyExitsError = errors.New("user already exists")
 
-func (cases *UseCases) SignUp(user models.User) (bool, error) {
+func (cases *UseCases) SignUp(user domain.User) (bool, error) {
 	_, exists, _ := cases.Repo.FindUser(user.Email)
 	if exists {
 		return false, UserAlreadyExitsError
