@@ -6,25 +6,16 @@ import (
 	"net/http"
 )
 
-var InvalidEmailError = errors.New("invalid error")
 var NotFindUserError = errors.New("no find user")
 
 func (c *AppController) GetOwnProfile(w http.ResponseWriter, r *http.Request) {
 	email, err := c.getEmailFromTokenRequest(w, r)
+	email, err = c.Cases.GetOwnProfile(email)
 	if utils.IsError(err) {
-		c.responseError(w, http.StatusUnauthorized, InvalidEmailError)
-	}
-
-	user, exists, repoErr := c.Repo.FindUser(email)
-	if !exists {
-		c.responseError(w, http.StatusUnauthorized, repoErr)
-	}
-
-	if !exists {
-		c.responseError(w, http.StatusUnauthorized, NotFindUserError)
+		c.responseError(w, http.StatusUnauthorized, err)
 	}
 
 	data := make(map[string]string)
-	data["email"] = user.Email
+	data["email"] = email
 	c.responseJson(w, http.StatusOK, data)
 }
