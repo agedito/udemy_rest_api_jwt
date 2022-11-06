@@ -11,7 +11,6 @@ type User struct {
 	Password string `json:"password"`
 }
 
-// learn errors management
 var EmptyEmailError = errors.New("email is missing")
 var InvalidEmailError = errors.New("invalid email")
 var EmptyPasswordsError = errors.New("password is missing")

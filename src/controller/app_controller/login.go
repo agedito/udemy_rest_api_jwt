@@ -8,7 +8,6 @@ import (
 
 var InvalidLoginError = errors.New("invalid email or password")
 
-// FEATURE Implement password service
 func (c *AppController) Login(w http.ResponseWriter, r *http.Request) {
 	requestUser, requestErr := c.getUserFromRequest(w, r)
 	if utils.IsError(requestErr) {

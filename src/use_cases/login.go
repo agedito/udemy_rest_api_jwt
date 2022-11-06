@@ -11,8 +11,8 @@ var InvalidEmailError = errors.New("invalid email")
 var InvalidPasswordError = errors.New("invalid password")
 var GeneratingTokenError = errors.New("error generating token")
 
-func (cases *UseCases) Login(userEnail string, userPassword string) (token.Token, error) {
-	repoUser, exists, _ := cases.Repo.FindUser(userEnail)
+func (cases *UseCases) Login(userEmail string, userPassword string) (token.Token, error) {
+	repoUser, exists, _ := cases.Repo.FindUser(userEmail)
 	if !exists {
 		return token.Token{}, InvalidEmailError
 	}
