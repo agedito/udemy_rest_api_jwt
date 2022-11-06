@@ -2,13 +2,12 @@ package use_cases
 
 import (
 	"agedito/udemy/rest_api_jwt/models"
+	"agedito/udemy/rest_api_jwt/service/password"
 	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var UserAlreadyExitsError = errors.New("user already exists")
-var GeneratingPasswordError = errors.New("error generating password")
 
 func (cases *UseCases) SignUp(user models.User) (bool, error) {
 	_, exists, _ := cases.Repo.FindUser(user.Email)
@@ -16,13 +15,12 @@ func (cases *UseCases) SignUp(user models.User) (bool, error) {
 		return false, UserAlreadyExitsError
 	}
 
-	// TODO: password service
-	hash, passwordErr := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	hashPassword, passwordErr := password.GeneratePassword(user.Password)
 	if utils.IsError(passwordErr) {
-		return false, GeneratingPasswordError
+		return false, passwordErr
 	}
 
-	user.Password = string(hash)
+	user.Password = hashPassword
 	created, repoCreationErr := cases.Repo.CreateUser(user)
 	if !created {
 		return false, repoCreationErr

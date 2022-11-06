@@ -1,10 +1,10 @@
 package use_cases
 
 import (
+	"agedito/udemy/rest_api_jwt/service/password"
 	"agedito/udemy/rest_api_jwt/service/token"
 	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var InvalidEmailError = errors.New("invalid email")
@@ -18,8 +18,8 @@ func (cases *UseCases) Login(userEmail string, userPassword string) (token.Token
 	}
 
 	hashedPassword := repoUser.Password
-	passwordErr := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(userPassword))
-	if utils.IsError(passwordErr) {
+	match, passwordErr := password.CheckPassword(userPassword, hashedPassword)
+	if !match || utils.IsError(passwordErr) {
 		return token.Token{}, InvalidPasswordError
 	}
 
