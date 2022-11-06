@@ -1,9 +1,9 @@
 package use_cases
 
 import (
+	"agedito/udemy/rest_api_jwt/internal/application/services/password"
+	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"agedito/udemy/rest_api_jwt/internal/domain"
-	"agedito/udemy/rest_api_jwt/service/password"
-	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 )
 

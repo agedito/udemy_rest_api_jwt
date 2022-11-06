@@ -1,8 +1,8 @@
 package app_controller
 
 import (
-	"agedito/udemy/rest_api_jwt/service/token"
-	"agedito/udemy/rest_api_jwt/utils"
+	"agedito/udemy/rest_api_jwt/internal/application/services/token"
+	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"errors"
 	"net/http"
 	"strings"

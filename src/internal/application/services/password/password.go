@@ -1,7 +1,7 @@
 package password
 
 import (
-	"agedito/udemy/rest_api_jwt/utils"
+	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 )

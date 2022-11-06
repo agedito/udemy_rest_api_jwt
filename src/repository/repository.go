@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"agedito/udemy/rest_api_jwt/utils"
+	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"database/sql"
 	"github.com/lib/pq"
 )

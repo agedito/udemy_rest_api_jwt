@@ -1,8 +1,8 @@
 package token
 
 import (
+	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"agedito/udemy/rest_api_jwt/internal/domain"
-	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 )

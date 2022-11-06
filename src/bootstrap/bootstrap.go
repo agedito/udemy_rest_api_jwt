@@ -2,9 +2,9 @@ package bootstrap
 
 import (
 	"agedito/udemy/rest_api_jwt/controller/app_controller"
+	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"agedito/udemy/rest_api_jwt/repository"
 	"agedito/udemy/rest_api_jwt/server"
-	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 	"fmt"
 	"log"
