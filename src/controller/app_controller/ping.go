@@ -2,7 +2,7 @@ package app_controller
 
 import (
 	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
-	"agedito/udemy/rest_api_jwt/use_cases"
+	"agedito/udemy/rest_api_jwt/internal/application/use_cases"
 	"errors"
 	"fmt"
 	"net/http"
