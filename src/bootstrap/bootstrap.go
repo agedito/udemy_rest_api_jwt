@@ -4,6 +4,7 @@ import (
 	"agedito/udemy/rest_api_jwt/controller/app_controller"
 	"agedito/udemy/rest_api_jwt/repository"
 	"agedito/udemy/rest_api_jwt/server"
+	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 	"fmt"
 	"log"
@@ -20,7 +21,7 @@ func Run() error {
 
 	s := server.New(address)
 	repo, err := repository.New(url)
-	if err != nil {
+	if utils.IsError(err) {
 		log.Fatal(err)
 		return RepoError
 	}

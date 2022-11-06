@@ -35,7 +35,7 @@ func NewFromUser(user models.User) (Token, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenId, err := token.SignedString([]byte(secret))
 
-	if err != nil {
+	if utils.IsError(err) {
 		return Token{}, GenerationTokenError
 	}
 

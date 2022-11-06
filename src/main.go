@@ -2,6 +2,7 @@ package main
 
 import (
 	"agedito/udemy/rest_api_jwt/bootstrap"
+	"agedito/udemy/rest_api_jwt/utils"
 	"log"
 )
 
@@ -12,7 +13,7 @@ import (
 
 func main() {
 	err := bootstrap.Run()
-	if err != nil {
+	if utils.IsError(err) {
 		log.Fatal(err)
 		return
 	}

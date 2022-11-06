@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"agedito/udemy/rest_api_jwt/utils"
 	"database/sql"
 	"github.com/lib/pq"
 )
@@ -12,7 +13,7 @@ type Repository struct {
 func New(url string) (Repository, error) {
 	repo := Repository{}
 	err := repo.ConnectDB(url)
-	if err != nil {
+	if utils.IsError(err) {
 		return repo, err
 	}
 
@@ -21,18 +22,18 @@ func New(url string) (Repository, error) {
 
 func (r *Repository) ConnectDB(url string) error {
 	pgUrl, err := pq.ParseURL(url)
-	if err != nil {
+	if utils.IsError(err) {
 		return err
 	}
 
 	var db *sql.DB
 	db, err = sql.Open("postgres", pgUrl)
-	if err != nil {
+	if utils.IsError(err) {
 		return err
 	}
 
 	err = db.Ping()
-	if err != nil {
+	if utils.IsError(err) {
 		return err
 	}
 
