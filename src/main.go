@@ -5,9 +5,10 @@ import (
 	"log"
 )
 
-//FEATURE Manage environments
-//FEATURE Create postman and .http files
-//FEATURE Create tests
+// FEATURE Manage environments
+// FEATURE Create postman and .http files
+// FEATURE Create tests
+// FEATURE Error management
 
 func main() {
 	err := bootstrap.Run()

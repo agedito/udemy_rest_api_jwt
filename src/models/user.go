@@ -1,8 +1,10 @@
 package models
 
 import (
+	"agedito/udemy/rest_api_jwt/utils"
 	"errors"
 	"net/mail"
+	"strings"
 )
 
 type User struct {
@@ -24,9 +26,12 @@ func (user *User) Validate() (bool, error) {
 		return false, EmptyPasswordsError
 	}
 
-	// learn check not . case
 	_, err := mail.ParseAddress(user.Email)
-	if err != nil {
+	if utils.IsError(err) {
+		return false, InvalidEmailError
+	}
+
+	if !strings.Contains(user.Email, ".") {
 		return false, InvalidEmailError
 	}
 
