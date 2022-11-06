@@ -2,11 +2,8 @@ package app_controller
 
 import (
 	"agedito/udemy/rest_api_jwt/utils"
-	"errors"
 	"net/http"
 )
-
-var NotFindUserError = errors.New("no find user")
 
 func (c *AppController) GetOwnProfile(w http.ResponseWriter, r *http.Request) {
 	email, err := c.getEmailFromTokenRequest(w, r)
