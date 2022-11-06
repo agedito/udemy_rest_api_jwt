@@ -34,7 +34,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"john@do.com\",\r\n    \"password\":\"anything\"\r\n}"
+					"raw": "{\r\n    \"email\":\"nadie@test.com\",\r\n    \"password\":\"anything\"\r\n}"
 				},
 				"url": {
 					"raw": "{{url}}/signup",
