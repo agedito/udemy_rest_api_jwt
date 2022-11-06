@@ -3,6 +3,7 @@ package app_controller
 import (
 	"agedito/udemy/rest_api_jwt/models"
 	"agedito/udemy/rest_api_jwt/repository"
+	"agedito/udemy/rest_api_jwt/use_cases"
 	"agedito/udemy/rest_api_jwt/utils"
 	"encoding/json"
 	"errors"
@@ -10,7 +11,8 @@ import (
 )
 
 type AppController struct {
-	Repo repository.Repository
+	Repo  repository.Repository
+	Cases use_cases.UseCases
 }
 
 var DecodeUserError = errors.New("error decoding user")
@@ -45,7 +47,7 @@ func (c *AppController) getUserFromRequest(w http.ResponseWriter, r *http.Reques
 }
 
 func New(repo repository.Repository) AppController {
-	return AppController{Repo: repo}
+	return AppController{Repo: repo, Cases: use_cases.New(repo)}
 }
 
 func (c *AppController) getEmailFromTokenRequest(_ http.ResponseWriter, r *http.Request) (string, error) {
