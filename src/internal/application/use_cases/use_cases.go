@@ -1,6 +1,8 @@
 package use_cases
 
-import "agedito/udemy/rest_api_jwt/repository"
+import (
+	"agedito/udemy/rest_api_jwt/internal/platform/repository"
+)
 
 type UseCases struct {
 	Repo repository.Repository

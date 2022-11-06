@@ -4,7 +4,7 @@ import (
 	"agedito/udemy/rest_api_jwt/internal/application/services/utils"
 	"agedito/udemy/rest_api_jwt/internal/application/use_cases"
 	"agedito/udemy/rest_api_jwt/internal/domain"
-	"agedito/udemy/rest_api_jwt/repository"
+	"agedito/udemy/rest_api_jwt/internal/platform/repository"
 	"encoding/json"
 	"errors"
 	"net/http"
